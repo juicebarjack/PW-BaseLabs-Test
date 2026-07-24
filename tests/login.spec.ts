@@ -1,20 +1,26 @@
 import { test, expect } from '@playwright/test';
 import { LoginPage } from '../pages/LoginPage';
 
-test('Successful Login', async ({ page }) => {
-  await page.goto(process.env.BASE_URL!);
-  await page.getByRole('link', { name: 'Login' }).click();
-  await page.locator('#username').fill(process.env.USERNAME!);
-  await page.locator('#password').fill(process.env.PASSWORD!);
-  await page.getByRole('button', { name: 'Login' }).click();
-  await expect(page.getByRole('link', { name: 'Logout' })).toBeVisible();
+test('Login', async ({ page }) => {
+  const loginPage = new LoginPage(page);
+  await loginPage.login();
+  await expect(loginPage.logoutButton).toBeVisible();
 });
 
-test('Login with POM', async ({ page }) => {
+test('Login with both fields empty', async ({ page }) => {
   const loginPage = new LoginPage(page);
-  await loginPage.goTo();
-  await loginPage.login();
-  await loginPage.fillForm();
-  await loginPage.submit();
-  await expect(loginPage.logoutButton).toBeVisible();
+  await loginPage.emptyLogin();
+  await expect(loginPage.loginErrorMessage).toBeVisible();
+});
+
+test('Login with no Username', async ({ page }) => {
+  const loginPage = new LoginPage(page);
+  await loginPage.loginEmptyUsername();
+  await expect(loginPage.loginErrorMessage).toBeVisible();
+});
+
+test('Login with no Password', async ({ page }) => {
+  const loginPage = new LoginPage(page);
+  await loginPage.loginEmptyPassWord();
+  await expect(loginPage.loginErrorMessage).toBeVisible();
 });
