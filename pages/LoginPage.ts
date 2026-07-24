@@ -12,13 +12,13 @@ export class LoginPage {
     }
 
     async goTo(){
-        await this.page.goto('https://quotes.toscrape.com/login', {
+        await this.page.goto('/login', {
             waitUntil: 'domcontentloaded'
         });
     }
     async fillForm(
-        userName: string,
-        passWord: string
+        userName: string = process.env.USERNAME!,
+        passWord: string = process.env.PASSWORD!
     ){
         await this.userNameInput.fill(userName); 
         await this.passWordInput.fill(passWord);
